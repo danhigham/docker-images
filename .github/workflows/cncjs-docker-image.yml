@@ -15,4 +15,5 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the cncjs Docker image
-      run: docker build ./cncjs --file Dockerfile --tag cncjs:$(date +%s)
+      working-directory: ./cncjs
+      run: docker build . --file Dockerfile --tag cncjs:$(date +%s)
