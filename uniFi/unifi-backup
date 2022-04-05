@@ -1,0 +1,53 @@
+#!/bin/ash
+
+conf_dir='/etc/unifi'
+backup_dir='/srv/backup/unifi'
+service_dir='/run/openrc/s6-scan/unifi'
+
+start_state='down'
+
+if s6-svok $service_dir; then
+    if s6-svstat -o up,ready $service_dir | grep -q true; then
+        echo 'Stopping the UniFi Controller'
+        start_state='up'
+        s6-svc -d $service_dir
+        sleep 3
+    fi
+else
+    echo 'Warning: The UniFi Controller is not supervised'
+    exit 1
+fi
+
+if s6-svstat -o up $service_dir | grep -q false; then
+    echo 'Success: The UniFi Controller was stopped'
+else
+    echo 'Error: The UniFi Controller is still running'
+    exit 1
+fi
+
+stamp=`date +%Y-%m-%d_%H%M%S`
+
+mkdir -p $backup_dir
+cd $backup_dir
+mkdir "data-$stamp"
+
+echo "Backing up to /srv/backup/unifi/data-$stamp.tar.gz"
+
+if rsync -az /srv/unifi/data/ "data-$stamp"; then
+    echo '* rsync succeeded'
+    if tar czf "data-$stamp.tar.gz" "data-$stamp"; then
+        echo '* tar succeeded'
+        rm -rf "data-$stamp"
+        echo 'Backup succeeded'
+    else
+        echo 'Backup failed: tar failed'
+	exit 1
+    fi
+fi
+
+if [ "$start_state" == 'up' ]; then
+    echo 'Starting the UniFi Controller'
+    s6-svc -u $service_dir
+    sleep 5
+    s6-svstat $service_dir
+fi
