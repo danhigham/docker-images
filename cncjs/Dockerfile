@@ -1,7 +1,7 @@
 FROM node:lts-alpine
 
 RUN apk update 
-RUN apk add python3 py3-pip g++ make linux-headers bash
+RUN apk add python3 py3-pip g++ make linux-headers bash socat
 
 ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
 
