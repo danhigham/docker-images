@@ -3,10 +3,10 @@ FROM python:alpine
 # RUN echo 'http://dl-cdn.alpinelinux.org/alpine/v3.9/community' >> /etc/apk/repositories
 # RUN apk upgrade --update
 
-RUN apk add openjdk8-jre git alpine-sdk linux-headers
+RUN apk add openjdk8-jre git alpine-sdk linux-headers bsd-compat-headers openssl-dev xz-dev curl-dev
+
 RUN git clone https://github.com/mongodb/mongo.git
 
-RUN apk add  openssl-dev xz-dev curl-dev
 WORKDIR mongo
 RUN python3 -m pip install -r etc/pip/compile-requirements.txt
 RUN python3 buildscripts/scons.py DESTDIR=/opt/mongo install-mongod
