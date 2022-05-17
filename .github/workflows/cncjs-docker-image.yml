@@ -41,7 +41,7 @@ jobs:
           image-tag: "danhigham/cncjs:latest"
           sysdig-secure-url: "https://us2.app.sysdig.com"
           sysdig-secure-token: ${{ secrets.SYSDIG_SECURE_TOKEN }}
-          input-type: docker-daemon
+          input-type: pull
           run-as-user: root
 
       - uses: github/codeql-action/upload-sarif@v1
