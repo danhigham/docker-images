@@ -41,6 +41,7 @@ jobs:
           image-tag: "danhigham/cncjs:latest"
           sysdig-secure-url: "https://us2.app.sysdig.com"
           sysdig-secure-token: ${{ secrets.SYSDIG_SECURE_TOKEN }}
+          ignore-failed-scan: true
           input-type: pull
           run-as-user: root
 
