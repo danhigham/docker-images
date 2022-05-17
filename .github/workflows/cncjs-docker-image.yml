@@ -34,3 +34,19 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Scan image for vulnerabilities
+        id: scan
+        uses: sysdiglabs/scan-action@v3
+        with:
+          image-tag: "danhigham/cncjs:latest"
+          sysdig-secure-token: ${{ secrets.SYSDIG_SECURE_TOKEN }}
+          input-type: docker-daemon
+          run-as-user: root
+
+        - uses: github/codeql-action/upload-sarif@v1
+          if: always()
+          with:
+            sarif_file: ${{ steps.scan.outputs.sarifReport }}
+
+
